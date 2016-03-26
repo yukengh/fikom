@@ -47,7 +47,10 @@ AppAsset::register($this);
                 ['label' => 'Processed', 'items'=>[
                     ['label'=> 'KRS', 'url'=>['/krs-processed/index']],
                     ['label'=> 'DNS', 'url'=>['/dns-processed/index']],
-                ]],                 
+                ]],  
+                ['label' => 'Report', 'items'=>[
+                    ['label'=> 'Report Summary', 'url'=>['/dns-report/index']],
+                ]],                
                 
             ];
             if (Yii::$app->user->isGuest) {
