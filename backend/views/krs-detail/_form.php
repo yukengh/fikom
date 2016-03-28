@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use common\models\Matakuliah;
+use common\models\Pengampu;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 
@@ -15,11 +15,16 @@ use yii\helpers\ArrayHelper;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?php // $form->field($model, 'krsdns_id')->textInput() ?>
+    <?=  $form->field($model, 'krsdns_id')->hiddenInput()->label(false) ?>
 
     <?php // $form->field($model, 'matakuliah_kode')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'matakuliah_kode')->widget(Select2::classname(), [
-            'data' => ArrayHelper::map(Matakuliah::find()->all(), 'kode', 'kode'),
+            'data' => ArrayHelper::map(Pengampu::find()
+                    ->select('pengampu.matakuliah_kode')
+                    ->joinWith(['krsdnsDetail', 'krsdns'])
+                    ->where('krsdns.id = :krsdns_id', [':krsdns_id' => $model->krsdns_id])
+                    ->distinct()
+                    ->all(), 'matakuliah_kode', 'matakuliah_kode'),
             'language' => 'en',
             'options' => ['placeholder' => '-- Kode Matakuliah --', 'id'=>'kodeId'],
             'pluginOptions' => [
@@ -34,7 +39,8 @@ use yii\helpers\ArrayHelper;
 
     <?php // $form->field($model, 'gangen')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'status')->dropDownList(['B'=>'B',  'U'=>'U',],['prompt'=>'-']) ?>
+    <?= $form->field($model, 'status')->textInput(['maxlength' => true, 'readOnly' => TRUE]) ?>
+    <?php // $form->field($model, 'status')->dropDownList(['B'=>'B',  'U'=>'U',],['prompt'=>'-']) ?>
 
     <?php // $form->field($model, 'nilai')->textInput(['maxlength' => true]) ?>
 
@@ -59,20 +65,17 @@ $script = <<< JS
 
     $('#kodeId').change(function() {
         var kodeMk = $(this).val();
-        $.get('index.php?r=matakuliah/get-matakuliahs', {kode : kodeMk}, function(data) {
+        $.get('index.php?r=pengampu/get-pengampu', {kode : $(this).val()}, function(data) {
             var data = $.parseJSON(data);
             $('#krsdnsdetail-nama_mk').attr('value', data.nama_mk);
             $('#krsdnsdetail-semester_mk').attr('value', data.semester_mk);
             $('#krsdnsdetail-sks').attr('value', data.sks);
-        });
-        $.get('index.php?r=pengampu/get-pengampu2', {kode : $(this).val(), krsdns_id : $('#krsdns_id').val()}, function(data) {
-            try {
-                var data = $.parseJSON(data);
-                $('#krsdnsdetail-nama_pengampu').attr('value', data.nama_pengampu);
-            } catch (err) {
-                $('#krsdnsdetail-nama_pengampu').attr('value', '');
-            }
+            $('#krsdnsdetail-nama_pengampu').attr('value', data.nama_pengampu);
+        }); 
+        $.get('index.php?r=krs-processed/get-status-matakuliah2', {kode_mk : $(this).val(), krsdns_id : $('#krsdnsdetail-krsdns_id').val()}, function(data) {
+            $('#krsdnsdetail-status').attr('value', data);
         });          
+            
     });
 
 JS;

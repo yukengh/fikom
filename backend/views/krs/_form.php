@@ -89,17 +89,25 @@ use yii\bootstrap\ActiveForm;
                         <div class="row">
                             <div class="col-sm-2">
                             <?php echo $form->field($modelKrsDetail, "[{$i}]matakuliah_kode")->dropDownList(
-                                ArrayHelper::map(Pengampu::find()->all(), 'matakuliah_kode', 'matakuliah_kode'),[
-                                        'prompt' => '-- Kode Matakuliah --',                          
-                                        'onchange'=>'idx = id.split("-");'
-                                            . '$.get("index.php?r=pengampu/get-pengampu", {kode : $(this).val(), prodi : $("#krsdns-prodi_nama_jenjang").val()}, function(data) {'
-                                                . 'var data = $.parseJSON(data);'
-                                                . '$("#krsdnsdetail-"+ idx[1] +"-nama_mk").val(data.nama_mk);'
-                                                . '$("#krsdnsdetail-"+ idx[1] +"-semester_mk").val(data.semester_mk);'
-                                                . '$("#krsdnsdetail-"+ idx[1] +"-sks").val(data.sks);'                                         
-                                                . '$("#krsdnsdetail-"+ idx[1] +"-nama_pengampu").val(data.nama_pengampu);'                                         
-                                            . '});'                                                                                       
-                                    ])->label() ?>	
+                                    ArrayHelper::map(Pengampu::find()
+                                            ->select('pengampu.matakuliah_kode')
+                                            ->joinWith(['krsdnsDetail', 'krsdns'])
+                                            ->where('krsdns.id = :krsdns_id', [':krsdns_id' => $model->id])
+                                            ->distinct()
+                                            ->all(), 'matakuliah_kode', 'matakuliah_kode'),[                                                
+                                                'prompt' => '-- Kode Matakuliah --',                          
+                                                'onchange'=>'idx = id.split("-");'
+                                                    . '$.get("index.php?r=pengampu/get-pengampu", {kode : $(this).val()}, function(data) {'
+                                                        . 'var data = $.parseJSON(data);'
+                                                        . '$("#krsdnsdetail-"+ idx[1] +"-nama_mk").val(data.nama_mk);'
+                                                        . '$("#krsdnsdetail-"+ idx[1] +"-semester_mk").val(data.semester_mk);'
+                                                        . '$("#krsdnsdetail-"+ idx[1] +"-sks").val(data.sks);'                                         
+                                                        . '$("#krsdnsdetail-"+ idx[1] +"-nama_pengampu").val(data.nama_pengampu);'                                         
+                                                    . '});'
+                                                    . '$.post("index.php?r=krs-processed/get-status-matakuliah&kode_mk='.'"+$(this).val()+"&npm='.'"+$("#npm").val(), function(data) {'
+                                                        . '$("#krsdnsdetail-"+ idx[1] +"-status").val(data);'
+                                                    . '});'                                                                                       
+                                            ])->label() ?>
                             </div> 
                             <div class="col-sm-4">
                                 <?= $form->field($modelKrsDetail, "[{$i}]nama_mk")->textInput(['maxlength' => true, 'readOnly' => TRUE]) ?>
@@ -111,9 +119,8 @@ use yii\bootstrap\ActiveForm;
                                 <?= $form->field($modelKrsDetail, "[{$i}]sks")->textInput(['maxlength' => true, 'readOnly' => TRUE]) ?>
                             </div>
                             <div class="col-sm-1">
-                                <?php //$form->field($modelKrsDetail, "[{$i}]status")->textInput(['maxlength' => true]) ?>
-                                <?= $form->field($modelKrsDetail, "[{$i}]status")->dropDownList([
-                                    'B'=>'B',  'U'=>'U',],['prompt'=>'-']) ?>
+                                <?= $form->field($modelKrsDetail, "[{$i}]status")->textInput(['maxlength' => true, 'readOnly' => TRUE]) ?>
+                                <?php // $form->field($modelKrsDetail, "[{$i}]status")->dropDownList(['B'=>'B',  'U'=>'U',],['prompt'=>'-']) ?>
                             </div>
                             <div class="col-sm-3">
                                 <?= $form->field($modelKrsDetail, "[{$i}]nama_pengampu")->textInput(['maxlength' => true, 'readOnly' => TRUE]) ?>                            
@@ -149,7 +156,7 @@ $script = <<< JS
             $('#krsdns-dosen_wali').attr('value', data.dosen_wali_nama);
         });      
     });    
-        
+
     $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
         var idx = $('select[id$="matakuliah_kode"]').size() - 1;
         $.post('index.php?r=pengampu/lists&id='+$("#npm").val(), function(data) {
@@ -157,7 +164,7 @@ $script = <<< JS
         });       
       // console.log("afterInsert : "+ $('select[id$="matakuliah_kode"]').size());
     });          
-        
+       
 JS;
 $this->registerJs($script);
 ?>

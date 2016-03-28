@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 //1use yii\grid\GridView;
 use kartik\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\KrsdnsSearch */
@@ -56,6 +57,27 @@ $this->title = 'KARTU RENCANA STUDI MAHASISWA (KRSM)';
             // 'sks_berikutnya',
 
             ['class' => 'yii\grid\ActionColumn'],
+     /*       [
+                'class' => 'kartik\grid\ActionColumn',
+                'template' => '{view}{update}{delete}',
+                'buttons' => [
+                    'update' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                           // 'title' => Yii::t('app', 'Hapus'),
+                           // 'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                            'data-method' => 'post',
+                            'data-pjax' => '0',
+                        ]);
+                    }                    
+                ],
+                'urlCreator' => function ($action, $model, $key, $index) {
+                    $idKrsDetail = $model->id;
+                    if ($action === 'update') {                       
+                        return Url::to(['krs/update', 'id' => $idKrsDetail]);
+                    }
+                }                
+            ],
+        */                
         ],
     ]); ?>
 

@@ -121,24 +121,25 @@ class PengampuController extends Controller
         }
     }
     
-    public function actionGetPengampu($kode, $prodi) {
-        //find the kode_prodi from the prodi table
+    public function actionGetPengampu($kode) {
         $pengampu = Pengampu::find()
-                ->where('matakuliah_kode = :kode', [':kode' => $kode])
-                ->andwhere('prodi_nama_jenjang = :prodi', [':prodi' => $prodi])
+                ->select('nama_mk, semester_mk, sks, nama_pengampu')
+                ->where('matakuliah_kode = :kode_mk', [':kode_mk' => $kode])
                 ->one();
         echo Json::encode($pengampu);
     }    
- /*   
+/*
     public function actionGetPengampu2($kode, $krsdns_id) {
         $pengampu = Pengampu::find()
-                ->select('pengampu.nama_pengampu')
                 ->joinWith(['krsdns', 'krsdnsDetail'])
-                ->andwhere(['pengampu.matakuliah_kode'=>$kode, 'krsdns.id'=>$krsdns_id])->one();
+                ->where('pengampu.prodi_nama_jenjang = krsdns.prodi_nama_jenjang')                
+                ->andwhere('pengampu.matakuliah_kode = :kode', [':kode' => $kode])
+                ->andwhere('krsdns.id = :krsdns_id', [':krsdns_id'=>$krsdns_id])
+                ->all();
                 
         echo Json::encode($pengampu);
     }
-   */ 
+  */  
     public function actionLists($id) {  
         // dapatkan prodi mahasiswa berdasarkan npm nya
         $prodi = \common\models\Mahasiswa::find()

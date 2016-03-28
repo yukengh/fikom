@@ -55,7 +55,12 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'ipk',
             // 'sks_berikutnya',
 
-            ['class' => 'yii\grid\ActionColumn'],
+           // ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => "{view}{delete}",
+            ],
+                        
         ],
     ]); ?>
 

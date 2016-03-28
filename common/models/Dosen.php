@@ -65,6 +65,7 @@ class Dosen extends \yii\db\ActiveRecord
             'email' => 'Email',
             'foto' => 'Foto',
             'sks_diampu' => 'SKS Diampu',
+            'file' => 'Foto'
         ];
     }
 

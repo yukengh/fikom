@@ -209,4 +209,57 @@ class KrsProcessedController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+    
+    /**
+     * Mencari status matakuliah berdasarkan kode matakuliah dan npm mahasiswa.
+     * krs: _form.php, _form_update.php
+     * @param type $kode_mk
+     * @param type $npm
+     * @return string B atau U
+     */
+    public function actionGetStatusMatakuliah($kode_mk, $npm) {
+        $status = 'B';
+        
+        $krsdnsDetail = KrsdnsDetail::find()
+                ->select('krsdns_detail.nama_mk')
+                ->joinWith('krsdns')
+                ->where('krsdns_detail.matakuliah_kode = :kode_mk', [':kode_mk' => $kode_mk])
+                ->andwhere('krsdns.mahasiswa_npm = :npm', [':npm' => $npm])
+                ->one();
+        
+        if ($krsdnsDetail) {
+            $status = 'U';
+        }
+        
+        return $status;
+    }    
+    
+    /**
+     * Mencari status matakuliah berdasarkan kode matakuliah dan krsdns_id pada tabel krsdns_detail
+     * krs-detail: _form.php
+     * @param type $kode_mk
+     * @param type $krsdns_id
+     * @return string
+     */
+    public function actionGetStatusMatakuliah2($kode_mk, $krsdns_id) {
+        $status = 'B';
+        
+        $krsdns = Krsdns::find()
+                ->select('mahasiswa_npm')
+                ->where('id = :krsdns_id', [':krsdns_id' => $krsdns_id])
+                ->one();
+        
+        $krsdnsDetail = KrsdnsDetail::find()
+                ->select('krsdns_detail.nama_mk')
+                ->joinWith('krsdns')
+                ->where('krsdns_detail.matakuliah_kode = :kode_mk', [':kode_mk' => $kode_mk])
+                ->andwhere('krsdns.mahasiswa_npm = :npm', [':npm' => $krsdns->mahasiswa_npm])
+                ->one();
+        
+        if ($krsdnsDetail) {
+            $status = 'U';
+        }
+        
+        return $status;
+    }     
 }
