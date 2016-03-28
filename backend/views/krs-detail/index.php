@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel common\models\KrsdnsDetailSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Krsdns Details';
-$this->params['breadcrumbs'][] = $this->title;
+//$this->title = 'Krsdns Details';
+//$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="krsdns-detail-index">
 

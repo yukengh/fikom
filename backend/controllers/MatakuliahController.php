@@ -129,11 +129,10 @@ class MatakuliahController extends Controller
         
         return $gangen;
     }  
-    
     public function actionGetMatakuliahs($kode) {
         //find the kode_prodi from the prodi table
         $mk = Matakuliah::find()->where(['kode'=>$kode])->one();
         echo Json::encode($mk);
     }
-    
+ 
 }

@@ -16,7 +16,7 @@ return [
             'class' => '\kartik\grid\Module'
         ],        
     ],
-    'components' => [
+    'components' => [        
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,

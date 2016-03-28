@@ -84,4 +84,26 @@ class Krsdns extends \yii\db\ActiveRecord
     {
         return $this->hasMany(KrsdnsDetail::className(), ['krsdns_id' => 'id']);
     }  
+    
+    public function getJumlahSKS($npm) {
+        return Krsdns::find()
+                ->where(['mahasiswa_npm'=>$npm])
+                ->sum('total_sks');
+    }
+    
+    public function getJumlahSKSBelumLulus($npm) {
+        return Krsdns::find()
+                ->joinWith('krsdnsDetails')
+                ->where(['mahasiswa_npm'=>$npm])
+                ->andWhere('krsdns_detail.nilai > "C"')
+                ->sum('sks');        
+    }
+    
+    public function getJumlahSKSBelumDikontrak($npm) {
+        return Pengampu::find()
+                ->where('pengampu.matakuliah_kode not in (select krsdns_detail.matakuliah_kode 
+                    from krsdns_detail left join krsdns on krsdns_detail.krsdns_id = krsdns.id 
+                    where krsdns.mahasiswa_npm = :npm)', [':npm'=>$npm])
+                ->sum('pengampu.sks');        
+    }    
 }

@@ -6,7 +6,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
 use common\models\Mahasiswa;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
-use common\models\Matakuliah;
+use common\models\Pengampu;
 //use kartik\widgets\ActiveForm;
 use yii\bootstrap\ActiveForm;
 
@@ -23,11 +23,17 @@ use yii\bootstrap\ActiveForm;
         <?= $form->field($model, 'mahasiswa_npm')->widget(Select2::classname(), [
             'data' => ArrayHelper::map(Mahasiswa::find()->all(), 'npm', 'npm'),
             'language' => 'en',
-            'options' => ['placeholder' => '-- NPM Mahasiswa --', 'id'=>'npm'],
+            'options' => [
+                'onchange'=>'$.post("index.php?r=pengampu/lists&id='.'"+$(this).val(), function(data) {'
+                    . '$("#krsdnsdetail-0-matakuliah_kode").html(data);'                
+                . '});',
+                
+                'placeholder' => '-- NPM Mahasiswa --', 'id'=>'npm'
+                ],
             'pluginOptions' => [
                 'allowClear' => true
-            ],
-        ]); ?>
+                ],
+        ]); ?>	
         <?= $form->field($model, 'nama_mhs')->textInput(['maxlength' => true, 'readOnly' => TRUE]) ?>
         <?= $form->field($model, 'prodi_nama_jenjang')->textInput(['maxlength' => true, 'readOnly' => TRUE]) ?>
         <?= $form->field($model, 'dosen_wali')->textInput(['maxlength' => true, 'readOnly' => TRUE]) ?>
@@ -82,21 +88,18 @@ use yii\bootstrap\ActiveForm;
                         ?>
                         <div class="row">
                             <div class="col-sm-2">
-                            <?= $form->field($modelKrsDetail, "[{$i}]matakuliah_kode")->dropDownList(
-                                    ArrayHelper::map(Matakuliah::find()->all(), 'kode', 'kode'),[
+                            <?php echo $form->field($modelKrsDetail, "[{$i}]matakuliah_kode")->dropDownList(
+                                ArrayHelper::map(Pengampu::find()->all(), 'matakuliah_kode', 'matakuliah_kode'),[
                                         'prompt' => '-- Kode Matakuliah --',                          
                                         'onchange'=>'idx = id.split("-");'
-                                            . '$.get("index.php?r=matakuliah/get-matakuliahs", {kode : $(this).val()}, function(data) {'
+                                            . '$.get("index.php?r=pengampu/get-pengampu", {kode : $(this).val(), prodi : $("#krsdns-prodi_nama_jenjang").val()}, function(data) {'
                                                 . 'var data = $.parseJSON(data);'
                                                 . '$("#krsdnsdetail-"+ idx[1] +"-nama_mk").val(data.nama_mk);'
                                                 . '$("#krsdnsdetail-"+ idx[1] +"-semester_mk").val(data.semester_mk);'
                                                 . '$("#krsdnsdetail-"+ idx[1] +"-sks").val(data.sks);'                                         
-                                            . '});'  
-                                            .'$.get("index.php?r=pengampu/get-pengampu", {kode : $(this).val(), prodi : $("#krsdns-prodi_nama_jenjang").val()}, function(data) {'
-                                                . 'var data = $.parseJSON(data);'
-                                                . '$("#krsdnsdetail-"+ idx[1] +"-nama_pengampu").val(data.nama_pengampu);'                                       
-                                            . '});'                                                                                      
-                                    ])->label() ?>
+                                                . '$("#krsdnsdetail-"+ idx[1] +"-nama_pengampu").val(data.nama_pengampu);'                                         
+                                            . '});'                                                                                       
+                                    ])->label() ?>	
                             </div> 
                             <div class="col-sm-4">
                                 <?= $form->field($modelKrsDetail, "[{$i}]nama_mk")->textInput(['maxlength' => true, 'readOnly' => TRUE]) ?>
@@ -145,7 +148,15 @@ $script = <<< JS
             $('#krsdns-prodi_nama_jenjang').attr('value', data.prodi_jenjang);
             $('#krsdns-dosen_wali').attr('value', data.dosen_wali_nama);
         });      
-    });      
+    });    
+        
+    $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
+        var idx = $('select[id$="matakuliah_kode"]').size() - 1;
+        $.post('index.php?r=pengampu/lists&id='+$("#npm").val(), function(data) {
+           $("#krsdnsdetail-"+ idx +"-matakuliah_kode").html(data);           
+        });       
+      // console.log("afterInsert : "+ $('select[id$="matakuliah_kode"]').size());
+    });          
         
 JS;
 $this->registerJs($script);

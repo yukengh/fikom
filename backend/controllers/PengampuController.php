@@ -123,10 +123,13 @@ class PengampuController extends Controller
     
     public function actionGetPengampu($kode, $prodi) {
         //find the kode_prodi from the prodi table
-        $pengampu = Pengampu::find()->andwhere(['matakuliah_kode'=>$kode, 'prodi_nama_jenjang'=> $prodi])->one();
+        $pengampu = Pengampu::find()
+                ->where('matakuliah_kode = :kode', [':kode' => $kode])
+                ->andwhere('prodi_nama_jenjang = :prodi', [':prodi' => $prodi])
+                ->one();
         echo Json::encode($pengampu);
     }    
-    
+ /*   
     public function actionGetPengampu2($kode, $krsdns_id) {
         $pengampu = Pengampu::find()
                 ->select('pengampu.nama_pengampu')
@@ -134,6 +137,33 @@ class PengampuController extends Controller
                 ->andwhere(['pengampu.matakuliah_kode'=>$kode, 'krsdns.id'=>$krsdns_id])->one();
                 
         echo Json::encode($pengampu);
-    }      
+    }
+   */ 
+    public function actionLists($id) {  
+        // dapatkan prodi mahasiswa berdasarkan npm nya
+        $prodi = \common\models\Mahasiswa::find()
+                ->select('prodi_jenjang')
+                ->where('npm = :npm', [':npm' => $id])
+                ->one();
         
+        $count = Pengampu::find()
+                ->select('matakuliah_kode')
+                ->where('prodi_nama_jenjang = :prodi', [':prodi' => $prodi->prodi_jenjang])
+                ->count();
+        
+        $datas = Pengampu::find()
+                ->select('matakuliah_kode')
+                ->where('prodi_nama_jenjang = :prodi', [':prodi' => $prodi->prodi_jenjang])
+                ->all();     
+        
+        if ($count > 0) {
+            echo '<option>-- Kode Matakuliah --</option>';
+            foreach ($datas as $data) {
+                echo "<option value='".$data->matakuliah_kode."'>".$data->matakuliah_kode. "</option>";
+            }
+        } else {
+            echo '<option> - </option>';
+        }   
+    }
+    
 }

@@ -4,10 +4,11 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\Krsdns;
-use common\models\KrsdnsReportSearch;
+use common\models\KrsdnsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use common\models\KrsdnsDetailSearch;
 
 /**
  * DnsReportController implements the CRUD actions for Krsdns model.
@@ -32,76 +33,36 @@ class DnsReportController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new KrsdnsReportSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel = new KrsdnsSearch();
+        $dataProvider = $searchModel->searchReport(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
-
-    /**
-     * Displays a single Krsdns model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
+    
+    public function actionIndexMkBelumLulus()
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+        $searchModel = new KrsdnsSearch();
+        $dataProvider = $searchModel->searchMkBelumLulus(Yii::$app->request->queryParams);
+
+        return $this->render('index_mk_belum_lulus', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
-    }
-
-    /**
-     * Creates a new Krsdns model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
+    }   
+    
+    public function actionIndexMkBelumDikontrak()
     {
-        $model = new Krsdns();
+        $searchModel = new KrsdnsSearch();
+        $dataProvider = $searchModel->searchMkBelumDikontrak(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Updates an existing Krsdns model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Deletes an existing Krsdns model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
+        return $this->render('index_mk_belum_dikontrak', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }     
 
     /**
      * Finds the Krsdns model based on its primary key value.
@@ -112,10 +73,46 @@ class DnsReportController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Krsdns::findOne($id)) !== null) {
+        if (($model = Krsdns::findOne(['mahasiswa_npm'=>$id])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+    
+    public function actionViewMatakuliahSudahDikontrak($id)
+    {
+        $searchModel = new KrsdnsDetailSearch();
+        $dataProvider = $searchModel->searchMatakuliahSudahDikontrak(Yii::$app->request->queryParams, $id);     
+        
+        return $this->render('viewMatakuliahSudahDikontrak', [
+            'model' => $this->findModel($id),
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,  
+        ]);
+    }  
+    
+    public function actionViewMatakuliahBelumLulus($id)
+    {
+        $searchModel = new KrsdnsDetailSearch();
+        $dataProvider = $searchModel->searchMatakuliahBelumLulus(Yii::$app->request->queryParams, $id);     
+        
+        return $this->render('viewMatakuliahBelumLulus', [
+            'model' => $this->findModel($id),
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,  
+        ]);
+    } 
+    
+    public function actionViewMatakuliahBelumDikontrak($id)
+    {
+        $searchModel = new KrsdnsDetailSearch();
+        $dataProvider = $searchModel->searchMatakuliahBelumDikontrak(Yii::$app->request->queryParams, $id);     
+        
+        return $this->render('view_matakuliah_belum_dikontrak', [
+            'model' => $this->findModel($id),
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,  
+        ]);
+    }      
 }

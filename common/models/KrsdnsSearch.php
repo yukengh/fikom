@@ -112,5 +112,118 @@ class KrsdnsSearch extends Krsdns
             ->andFilterWhere(['like', 'sks_berikutnya', $this->sks_berikutnya]);
 
         return $dataProvider;
-    }      
+    }   
+    
+    public function searchReport($params)
+    {
+        $query = Krsdns::find()
+                ->select('mahasiswa_npm, nama_mhs, prodi_nama_jenjang, dosen_wali')
+                ->where('ips IS Not NULL OR ips <> "" OR ips <> 0')
+                ->distinct();
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        $this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        $query->andFilterWhere([
+            'id' => $this->id,
+        ]);
+
+        $query->andFilterWhere(['like', 'tahun_akademik', $this->tahun_akademik])
+            ->andFilterWhere(['like', 'semester', $this->semester])
+            ->andFilterWhere(['like', 'mahasiswa_npm', $this->mahasiswa_npm])
+            ->andFilterWhere(['like', 'nama_mhs', $this->nama_mhs])
+            ->andFilterWhere(['like', 'prodi_nama_jenjang', $this->prodi_nama_jenjang])
+            ->andFilterWhere(['like', 'dosen_wali', $this->dosen_wali])
+            ->andFilterWhere(['like', 'total_sks', $this->total_sks])
+            ->andFilterWhere(['like', 'ips', $this->ips])
+            ->andFilterWhere(['like', 'ipk', $this->ipk])
+            ->andFilterWhere(['like', 'sks_berikutnya', $this->sks_berikutnya]);
+
+        return $dataProvider;
+    }   
+    
+    public function searchMkBelumLulus($params)
+    {
+        $query = Krsdns::find()
+                ->select('mahasiswa_npm, nama_mhs, prodi_nama_jenjang, dosen_wali')
+                ->joinWith('krsdnsDetails')
+                ->where('ips IS Not NULL OR ips <> "" OR ips <> 0')
+                ->andWhere('krsdns_detail.nilai > "C"')
+                ->distinct();        
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        $this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        $query->andFilterWhere([
+            'id' => $this->id,
+        ]);
+
+        $query->andFilterWhere(['like', 'tahun_akademik', $this->tahun_akademik])
+            ->andFilterWhere(['like', 'semester', $this->semester])
+            ->andFilterWhere(['like', 'mahasiswa_npm', $this->mahasiswa_npm])
+            ->andFilterWhere(['like', 'nama_mhs', $this->nama_mhs])
+            ->andFilterWhere(['like', 'prodi_nama_jenjang', $this->prodi_nama_jenjang])
+            ->andFilterWhere(['like', 'dosen_wali', $this->dosen_wali])
+            ->andFilterWhere(['like', 'total_sks', $this->total_sks])
+            ->andFilterWhere(['like', 'ips', $this->ips])
+            ->andFilterWhere(['like', 'ipk', $this->ipk])
+            ->andFilterWhere(['like', 'sks_berikutnya', $this->sks_berikutnya]);
+
+        return $dataProvider;
+    }  
+    
+    public function searchMkBelumDikontrak($params)
+    {
+        $query = Krsdns::find()
+                ->select('mahasiswa_npm, nama_mhs, prodi_nama_jenjang, dosen_wali')
+                ->where('total_sks < (select sum(sks) from pengampu where prodi_nama_jenjang = krsdns.prodi_nama_jenjang)')
+                ->distinct();        
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        $this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        $query->andFilterWhere([
+            'id' => $this->id,
+        ]);
+
+        $query->andFilterWhere(['like', 'tahun_akademik', $this->tahun_akademik])
+            ->andFilterWhere(['like', 'semester', $this->semester])
+            ->andFilterWhere(['like', 'mahasiswa_npm', $this->mahasiswa_npm])
+            ->andFilterWhere(['like', 'nama_mhs', $this->nama_mhs])
+            ->andFilterWhere(['like', 'prodi_nama_jenjang', $this->prodi_nama_jenjang])
+            ->andFilterWhere(['like', 'dosen_wali', $this->dosen_wali])
+            ->andFilterWhere(['like', 'total_sks', $this->total_sks])
+            ->andFilterWhere(['like', 'ips', $this->ips])
+            ->andFilterWhere(['like', 'ipk', $this->ipk])
+            ->andFilterWhere(['like', 'sks_berikutnya', $this->sks_berikutnya]);
+
+        return $dataProvider;
+    }        
 }

@@ -9,7 +9,7 @@ use yii\helpers\Url;
 /* @var $searchModel common\models\KrsdnsReportSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'DAFTAR MAHASISWA YANG SUDAH MENGONTRAK MATAKULIAH';
+$this->title = 'DAFTAR MAHASISWA YANG BELUM LULUS MATAKULIAH';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="krsdns-index">
@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'buttons' => [
                     '1' => function ($url, $model) {
                         return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
-                            'title' => Yii::t('app', 'Matakuliah yang sudah dikontrak'),
+                            'title' => Yii::t('app', 'Matakuliah yang belum Lulus'),
                             'data-method' => 'post',
                             'data-pjax' => '0',
                         ]);
@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'urlCreator' => function ($action, $model, $key, $index) {
                     $id = $model->mahasiswa_npm;
                     switch ($action) {
-                        case('1'): return Url::to(['dns-report/view-matakuliah-sudah-dikontrak', 'id' => $id]); break;
+                        case('1'): return Url::to(['dns-report/view-matakuliah-belum-lulus', 'id' => $id]); break;
                     }
                 }                
             ],     

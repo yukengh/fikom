@@ -49,7 +49,9 @@ AppAsset::register($this);
                     ['label'=> 'DNS', 'url'=>['/dns-processed/index']],
                 ]],  
                 ['label' => 'Report', 'items'=>[
-                    ['label'=> 'Report Summary', 'url'=>['/dns-report/index']],
+                    ['label'=> 'MK Sudah Dikontrak', 'url'=>['/dns-report/index']],
+                    ['label'=> 'MK Belum Lulus', 'url'=>['/dns-report/index-mk-belum-lulus']],
+                    ['label'=> 'MK Belum Dikontrak', 'url'=>['/dns-report/index-mk-belum-dikontrak']],
                 ]],                
                 
             ];
