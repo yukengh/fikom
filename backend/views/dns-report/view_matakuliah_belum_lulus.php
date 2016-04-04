@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $model common\models\Krsdns */
 
-$this->title = 'DAFTAR NILAI SELURU MATAKULIAH YANG SUDAH DIKONTRAK';
-$this->params['breadcrumbs'][] = ['label' => 'MK SUDAH DIKONTRAK', 'url' => ['index']];
+$this->title = 'DAFTAR MATAKULIAH YANG BELUM LULUS';
+$this->params['breadcrumbs'][] = ['label' => 'MK BELUM LULUS', 'url' => ['index-mk-belum-lulus']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="krsdns-view">
@@ -49,8 +49,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
            // 'total_sks',
             [
-                'label'=>'total_sks',
-                'value' => $model->getJumlahSKS($model->mahasiswa_npm),
+                'label'=>'Total SKS',
+                'value' => $model->getJumlahSKSBelumLulus($model->mahasiswa_npm),
                 'format'=>'raw',
             ],
         ],

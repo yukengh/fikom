@@ -69,5 +69,16 @@ class Prodi extends \yii\db\ActiveRecord
     public function getPengampus()
     {
         return $this->hasMany(Pengampu::className(), ['prodi_nama_jenjang' => 'nama_jenjang']);
-    }
+    }  
+    
+    /**
+     * Mendapatkan jumlah SKS untuk report Prodi Matakuliah
+     * @param type $prodi
+     * @return type
+     */
+    public function getJumlahSKSProdi($prodi) {
+        return Pengampu::find()
+                ->where('prodi_nama_jenjang = :prodi', [':prodi' => $prodi])
+                ->sum('sks');
+    }      
 }

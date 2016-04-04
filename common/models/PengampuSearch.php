@@ -100,5 +100,5 @@ class PengampuSearch extends Pengampu
             ->andFilterWhere(['like', 'nama_pengampu', $this->nama_pengampu]);
 
         return $dataProvider;
-    }    
+    }       
 }

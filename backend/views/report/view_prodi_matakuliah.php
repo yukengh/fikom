@@ -5,13 +5,12 @@ use yii\widgets\DetailView;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Krsdns */
 
-$this->title = 'DAFTAR MATAKULIAH YANG BELUM LULUS';
-$this->params['breadcrumbs'][] = ['label' => 'MK BELUM LULUS', 'url' => ['index-mk-belum-lulus']];
+$this->title = 'DAFTAR MATAKULIAH PER PRODI';
+$this->params['breadcrumbs'][] = ['label' => 'MK PER PRODI', 'url' => ['index-prodi-matakuliah']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="krsdns-view">
+<div class="prodi-view">
 
     <h3 style="text-align: center; font-weight: bold"><?= Html::encode($this->title) ?></h3>
 
@@ -21,10 +20,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'mahasiswa_npm',
-            'nama_mhs',
-            'prodi_nama_jenjang',
-            'dosen_wali',
+            'nama_jenjang',
+            'kode',
         ],
     ]) ?>
         </div>
@@ -40,17 +37,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'nama_mk',
             'sks',            
             'semester_mk',
-            'nilai',
         ],
-    ]); ?>  
+    ]);   ?>  
       
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-           // 'total_sks',
             [
-                'label'=>'total_sks',
-                'value' => $model->getJumlahSKSBelumLulus($model->mahasiswa_npm),
+                'label'=>'Total SKS',
+                'value' =>$model->getJumlahSKSProdi($model->nama_jenjang),
                 'format'=>'raw',
             ],
         ],

@@ -45,7 +45,8 @@ class Krsdns extends \yii\db\ActiveRecord
             [['nama_mhs'], 'string', 'max' => 65],
             [['prodi_nama_jenjang'], 'string', 'max' => 35],
             [['dosen_wali'], 'string', 'max' => 45],
-            [['total_sks', 'sks_berikutnya'], 'string', 'max' => 3]
+            [['total_sks', 'sks_berikutnya'], 'string', 'max' => 3],
+            ['semester', 'unique', 'targetAttribute' => ['tahun_akademik', 'semester', 'mahasiswa_npm']],
         ];
     }
 
@@ -91,13 +92,27 @@ class Krsdns extends \yii\db\ActiveRecord
                 ->sum('total_sks');
     }
     
-    public function getJumlahSKSBelumLulus($npm) {
-        return Krsdns::find()
-                ->joinWith('krsdnsDetails')
-                ->where(['mahasiswa_npm'=>$npm])
+    public function getJumlahSKSBelumLulus($krsdns_npm) {
+        return KrsdnsDetail::find()
+                ->innerJoinWith('krsdns')
+                ->where('krsdns.mahasiswa_npm = :npm', [':npm'=>  $krsdns_npm])
                 ->andWhere('krsdns_detail.nilai > "C"')
-                ->sum('sks');        
+                ->andWhere('`krsdns_detail`.matakuliah_kode NOT IN(
+                    SELECT `krsdns_detail`.matakuliah_kode FROM `krsdns_detail` 
+                    INNER JOIN `krsdns` ON `krsdns_detail`.`krsdns_id` = `krsdns`.`id`
+                    WHERE (`krsdns`.`mahasiswa_npm`= :npm) AND (krsdns_detail.nilai <= "C"))', [
+                        ':npm' => $krsdns_npm
+                    ])
+                ->sum('krsdns_detail.sks');        
     }
+    
+    public function getJumlahSKSHistoriDiulangBelumLulus($krsdns_npm) {
+        return KrsdnsDetail::find()
+                ->innerJoinWith('krsdns')
+                ->where('krsdns.mahasiswa_npm = :npm', [':npm'=>  $krsdns_npm])
+                ->andWhere('krsdns_detail.nilai > "C"')
+                ->sum('sks');    
+    }    
     
     public function getJumlahSKSBelumDikontrak($npm) {
         return Pengampu::find()
@@ -105,5 +120,5 @@ class Krsdns extends \yii\db\ActiveRecord
                     from krsdns_detail left join krsdns on krsdns_detail.krsdns_id = krsdns.id 
                     where krsdns.mahasiswa_npm = :npm)', [':npm'=>$npm])
                 ->sum('pengampu.sks');        
-    }    
+    }     
 }

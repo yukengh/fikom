@@ -25,6 +25,9 @@ use Yii;
  */
 class KrsdnsDetail extends \yii\db\ActiveRecord
 {
+    public $tahun_akademik;
+    public $semester;
+    
     /**
      * @inheritdoc
      */

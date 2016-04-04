@@ -25,7 +25,7 @@ use common\models\Dosen;
 
     <?php // $form->field($model, 'matakuliah_kode')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'matakuliah_kode')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map(Matakuliah::find()->all(), 'kode', 'kode'),
+        'data' => ArrayHelper::map(Matakuliah::find()->orderBy('semester_mk')->all(), 'kode', 'kode'),
         'language' => 'en',
         'options' => ['placeholder' => '-- Kode Matakuliah --', 'id'=>'mk_kode'],
         'pluginOptions' => [

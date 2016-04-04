@@ -23,6 +23,7 @@ use Yii;
  */
 class Pengampu extends \yii\db\ActiveRecord
 {
+    
     /**
      * @inheritdoc
      */
@@ -112,5 +113,5 @@ class Pengampu extends \yii\db\ActiveRecord
     {
         return $this->hasOne(KrsdnsDetail::className(), ['matakuliah_kode' => 'matakuliah_kode']);
     }     
-         
+    
 }

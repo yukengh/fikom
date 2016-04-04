@@ -90,9 +90,9 @@ use yii\bootstrap\ActiveForm;
                             <div class="col-sm-2">
                             <?php echo $form->field($modelKrsDetail, "[{$i}]matakuliah_kode")->dropDownList(
                                     ArrayHelper::map(Pengampu::find()
-                                            ->select('pengampu.matakuliah_kode')
-                                            ->joinWith(['krsdnsDetail', 'krsdns'])
-                                            ->where('krsdns.id = :krsdns_id', [':krsdns_id' => $model->id])
+                                       //     ->select('pengampu.matakuliah_kode')
+                                       //     ->joinWith(['krsdnsDetail', 'krsdns'])
+                                        //    ->where('krsdns.id = :krsdns_id', [':krsdns_id' => $model->id])
                                             ->distinct()
                                             ->all(), 'matakuliah_kode', 'matakuliah_kode'),[                                                
                                                 'prompt' => '-- Kode Matakuliah --',                          

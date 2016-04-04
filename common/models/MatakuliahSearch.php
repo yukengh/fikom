@@ -63,5 +63,5 @@ class MatakuliahSearch extends Matakuliah
             ->andFilterWhere(['like', 'prasyarat', $this->prasyarat]);
 
         return $dataProvider;
-    }
+    }   
 }
