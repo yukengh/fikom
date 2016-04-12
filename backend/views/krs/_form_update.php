@@ -17,7 +17,8 @@ use common\models\Pengampu;
     
     <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
         <?= $form->field($model, 'tahun_akademik')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'semester')->textInput(['maxlength' => true]) ?>
+        <?php // $form->field($model, 'semester')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'semester')->dropDownList(['I'=>'I',  'II'=>'II',],['prompt'=>'-- Semester --']) ?>  
         <?= $form->field($model, 'mahasiswa_npm')->widget(Select2::classname(), [
             'data' => ArrayHelper::map(Mahasiswa::find()->all(), 'npm', 'npm'),
             'language' => 'en',

@@ -207,7 +207,7 @@ class KrsdnsDetailSearch extends KrsdnsDetail
     {
         $query = Krsdns::find()
                 ->select('krsdns.tahun_akademik, krsdns.semester, krsdns.total_sks, '
-                        . '`krsdns`.ips, krsdns.ipk')
+                        . 'krsdns.sks_lulus, `krsdns`.ips, krsdns.ipk')
                 ->innerJoinWith('krsdnsDetails')
                 ->where('krsdns.mahasiswa_npm = :npm', [':npm'=>  $krsdns_npm])
                 ->distinct();

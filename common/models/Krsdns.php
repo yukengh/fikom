@@ -15,6 +15,7 @@ use Yii;
  * @property string $prodi_nama_jenjang
  * @property string $dosen_wali
  * @property string $total_sks
+ * @property string $sks_lulus
  * @property string $ips
  * @property string $ipk
  * @property string $sks_berikutnya
@@ -45,7 +46,7 @@ class Krsdns extends \yii\db\ActiveRecord
             [['nama_mhs'], 'string', 'max' => 65],
             [['prodi_nama_jenjang'], 'string', 'max' => 35],
             [['dosen_wali'], 'string', 'max' => 45],
-            [['total_sks', 'sks_berikutnya'], 'string', 'max' => 3],
+            [['total_sks', 'sks_lulus', 'sks_berikutnya'], 'string', 'max' => 3],
             ['semester', 'unique', 'targetAttribute' => ['tahun_akademik', 'semester', 'mahasiswa_npm']],
         ];
     }
@@ -64,6 +65,7 @@ class Krsdns extends \yii\db\ActiveRecord
             'prodi_nama_jenjang' => 'Prodi',
             'dosen_wali' => 'Dosen Wali',
             'total_sks' => 'Ttl Sks',
+            'sks_lulus' => 'SKS Lulus',
             'ips' => 'IPS',
             'ipk' => 'IPK',
             'sks_berikutnya' => 'Next Sks',
